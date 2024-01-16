@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router';
 import { createUser } from '../App/Features/userDetailSlice';
 
 const Create = () => {
   const [users, setUser] = useState({});
   const dispatch=useDispatch()
+
+  const navigate=useNavigate()
 
   useEffect(() => {
     console.log(users);
@@ -14,17 +17,27 @@ const Create = () => {
     setUser({ ...users, [e.target.name]: e.target.value });
   };
 
-
-  const handleSubmit=(e)=>{
+  const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(users)
-        dispatch(createUser(users))
-  }
+    console.log(users);
+    dispatch(createUser(users));
+    setUser({});
+    navigate("/read")
+  };
+  
+  // Delay setting the state to an empty object
+  setTimeout(() => {
+    setUser({});
+  }, 0);
+
   return (
+  
     <div>
+  
       <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 " onSubmit={handleSubmit}>
         <div className="mb-4 bg-black">
           <div className='flex flex-col items-center justify-center h-[500px] '>
+          <h1 className='text-red-500 font-bold p-[15px] bg-white'>Fill The Data</h1>
             <label className="block text-white text-sm font-bold mb-2 "  >
               Name
             </label>
