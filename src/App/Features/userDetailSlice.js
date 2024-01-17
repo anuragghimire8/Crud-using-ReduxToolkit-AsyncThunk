@@ -27,6 +27,19 @@ export const showUser = createAsyncThunk("showUser", async (_, { rejectWithValue
 });
 
 
+ //delete action
+
+ export const deleteUser = createAsyncThunk("deleteUser", async (id, { rejectWithValue }) => {
+  try {
+    const response = await axios.delete(`https://65a4bd2452f07a8b4a3da06a.mockapi.io/crud/${id}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return rejectWithValue("Failed to fetch users");
+  }
+});
+
+
 export const userDetail = createSlice({
   name: "userDetail",
   initialState: {
@@ -57,6 +70,21 @@ export const userDetail = createSlice({
           state.users = action.payload; // Assuming the response is an array of users
         })
         .addCase(showUser.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload; // Use the payload from rejectWithValue
+        })
+        .addCase(deleteUser.pending, (state) => {
+          state.loading = true;
+        })
+        .addCase(deleteUser.fulfilled, (state, action) => {
+          state.loading = false;
+          const {id}=action.payload
+          if (id){
+            state.users=state.users.filter((ele)=>ele.id !== id)
+          }
+          console.log("delete action",action.payload)
+        })
+        .addCase(deleteUser.rejected, (state, action) => {
           state.loading = false;
           state.error = action.payload; // Use the payload from rejectWithValue
         });
